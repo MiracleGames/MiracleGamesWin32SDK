@@ -1,4 +1,4 @@
-![image.png](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/J9LnW62e01XE5lvD/img/061c6761-c7a1-40a4-afa8-1fde602e77c9.png)
+[![](https://github.com/MiracleGames/MiracleGamesUWPSDK/raw/master/images/MGLogo.png)](https://www.mguwp.net/index.html)
 
 # MiracleGamesC++SDK
 
@@ -70,8 +70,11 @@ MyProject/
 
 1.  **Property Pages**
     
-    *   **Build Events → Post-Build Event → Command Line**  
-        Add：`xcopy /y "$(ProjectDir)MiracleGamesSDK\$(PlatformTarget)\*.dll" "$(OutDir)"                        xcopy /y "$(ProjectDir)MiracleGamesSDK" "$(OutDir)"                                                xcopy /yei "$(ProjectDir)MiracleGamesSDK\resource" "$(OutDir)resource"                             xcopy /yei "$(ProjectDir)MiracleGamesSDK\runtimes" "$(OutDir)runtimes"`
+ *   **Build Events → Post-Build Event → Command Line**  
+Add：`xcopy /y "$(ProjectDir)MiracleGamesSDK\$(PlatformTarget)\*.dll" "$(OutDir)"
+xcopy /y "$(ProjectDir)MiracleGamesSDK" "$(OutDir)"
+xcopy /yei "$(ProjectDir)MiracleGamesSDK\resource" "$(OutDir)resource"
+xcopy /yei "$(ProjectDir)MiracleGamesSDK\runtimes" "$(OutDir)runtimes"`
         
 2.  Architecture matching  
     Ensure that the SDK is consistent with the engineering platform toolset (such as x64/x86).
