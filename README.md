@@ -1,5 +1,3 @@
-# CPP SDK README EN
-
 ![image.png](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/J9LnW62e01XE5lvD/img/061c6761-c7a1-40a4-afa8-1fde602e77c9.png)
 
 # MiracleGamesC++SDK
