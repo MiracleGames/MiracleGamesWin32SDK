@@ -71,11 +71,11 @@ MyProject/
 1.  **Property Pages**
     
  *   **Build Events → Post-Build Event → Command Line**  
-Add：
-	`xcopy /y "$(ProjectDir)MiracleGamesSDK\$(PlatformTarget)\*.dll" "$(OutDir)"
-	xcopy /y "$(ProjectDir)MiracleGamesSDK" "$(OutDir)"
-	xcopy /yei "$(ProjectDir)MiracleGamesSDK\resource" "$(OutDir)resource"
-	xcopy /yei "$(ProjectDir)MiracleGamesSDK\runtimes" "$(OutDir)runtimes"`   
+Add：<br>
+	`xcopy /y "$(ProjectDir)MiracleGamesSDK\$(PlatformTarget)\*.dll" "$(OutDir)"<br>
+	xcopy /y "$(ProjectDir)MiracleGamesSDK" "$(OutDir)"<br>
+	xcopy /yei "$(ProjectDir)MiracleGamesSDK\resource" "$(OutDir)resource"<br>
+	xcopy /yei "$(ProjectDir)MiracleGamesSDK\runtimes" "$(OutDir)runtimes"`   <br>
 2.  Architecture matching  
     Ensure that the SDK is consistent with the engineering platform toolset (such as x64/x86).
     
