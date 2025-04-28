@@ -1,0 +1,13 @@
+4.Version number:V1.2.6.6   Update time:2024-12-30   File size: 2.36MB 
+Optimise the login module.
+
+3.Version number:V1.2.6.4	Update time:2024-09-03	File size: 2.36MB
+Login module: optimise the description of the user agreement and privacy policy.
+
+2.Version number:V1.2.6.3	Update time:2024-08-14	File size: 2.36MB
+Add statistics for the Kochava platform.
+Optimise Microsoft Payments: real-time monitoring of the exchange rates of different countries to the US dollar, terminating the payment process when the exchange rate is abnormal and below a threshold.
+
+1.Version number:V1.2.5.0	Update time:2024-03-19	File size: 2.35MB
+Optimise ads module: when ads are closed by the backend, the client doesn't show the ads but calls the ad close callback event.
+Optimise the anti-addiction system: when the real name authentication is not passed or the authentication is underage information, the player will be prohibited from logging in and the game will be closed.
