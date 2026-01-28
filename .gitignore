@@ -1,0 +1,15 @@
+﻿################################################################################
+# 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
+################################################################################
+
+/.vs/Samples
+/Demo/CppTestProject1-zh/.vs/CppTestProject1
+/packages/nlohmann.json.3.12.0
+/Samples/CppApp/x64/Debug
+/Samples/CSharpApp/.vs
+/Samples/CSharpApp/bin/Debug
+/Samples/CSharpApp/obj/Debug
+/x64/Debug
+/Samples/CppConsoleTest/.vs/CppTestProject1
+/Samples/CppConsoleTest/x64/Debug
+/Demo/CppTestProject1-zh/CppTestProject1/Debug
