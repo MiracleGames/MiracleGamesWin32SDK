@@ -25,7 +25,7 @@ This program is an MG SDK functional demonstration which is only used
 
 1.  MG account login function
     
-2.  Open-screen ads, banner ads, interstitial ads, full-screen interstitial ads, and back-screen ads
+2.  Splash ad, banner, interstitial, couplet, fullscreen, rewarded, and exit ad
     
 3.  Microsoft Payment function
     
@@ -197,7 +197,6 @@ Creatives: images, videos, web pages
 Among them, banner ads, interstitial ads, couplet ads, and full-screen interstitial ads have special settings, and the corresponding parameters are set to meet different presentation needs.  
 
 ```plaintext
-//1.ShowFullScreenAd
 //Register Callback event to close the advert
 typedef void(WINAPI* FireCloseAdvertEvents)(OnResult onFireClose); 
 //callback returns string {"advertplaceKey":"E4F8E422D3","AdvertKey":"xx","AdvertResourceId":"xx"}
@@ -211,47 +210,92 @@ void registerFireCloseAdvertEvents(HINSTANCE hDLL) {
 	FireCloseAdvertEvents func = (FireCloseAdvertEvents)GetProcAddress(hDLL, "FireCloseAdvertEvents");
 	func(onFireCloseAdverts);//Pass in the callback function
 }
-
+//1.Splash Ad
 //Load MG adverts after SDK initialisation is complete
-typedef int(WINAPI* OpenMGAdvert)(HWND parentPtr, char* advertplaceKey); 
+typedef int(WINAPI* OpenAdvert)(char* jsonParam); 
 void openMGAdvert(HINSTANCE hDLL) {
-	OpenMGAdvert func = (OpenMGAdvert)GetProcAddress(hDLL, "OpenAdvert");
-	int result = func(parentPtr,"{\"advertplaceKey\":\"E4F8E422D3\",\"parentWidth\":1600,\"parentHeight\":900,\"appType\":1}");
-	//parentPtr: you can pass the handle of the whole form, or the handle of the container that spreads over the full screen
-	//parentWidth: width of the game window
-	//parentHeight: game window height
-	//result: 1:Normal; -1:Ads were closed by the background;
+	OpenAdvert func = (OpenAdvert)GetProcAddress(hDLL, "OpenAdvert");
+	nlohmann::json json_obj = {
+		{"handle",reinterpret_cast(g_hPnlSplashScreen)},//you can pass the handle of the whole form, or the handle of the container that spreads over the full screen
+		{"advertplaceKey", SplashAdKey},//Advertising ID,Created by developers in the MG backend
+		{"appType", 1},
+		{"adType", 1},//1.Interstitial 2.Banner 3.Couplet 4.Fullscreen 5.Splash Ad 6.Exit Ad 7.Rewarded 
+		{"parentWidth", clientWidth},//width of the game window
+		{"parentHeight", clientHeight}//height of the game window
+	};
+	std::string jsonStr = json_obj.dump(); 
+	int result = func(jsonStr.c_str());
+	//1: Ads are functioning normally 2: Ads have been disabled by the backend 3: No ad creatives available 4: No video player installed on this device
 }
 
-//2.ShowInterstitialAd
+//2.Banner
 void openMGAdvert(HINSTANCE hDLL) { 
-	OpenMGAdvert func = (OpenMGAdvert)GetProcAddress(hDLL, "OpenAdvert");
-	int result = func(parentPtr, "{\"advertplaceKey\":\"C6E76462AF\",\"width\":640,\"height\":640,\"appType\":1}");
-	//width: the width of the container, can not pass. Default value is 640.
-	//height: width of the container, can not be passed. Default value is 640.
+	OpenAdvert func = (OpenAdvert)GetProcAddress(hDLL, "OpenAdvert");
+	nlohmann::json json_obj = {
+		{"handle",reinterpret_cast(g_hPnlBanner)},//handle for the control used to display MG ad
+		{"advertplaceKey", BannerAdKey}, //Advertising ID,Created by developers in the MG backend
+		{"appType", 1},
+		{"adType", 2}//Banner 
+	};
+	std::string jsonStr = json_obj.dump();
+	int result = func(jsonStr.c_str());
 }
 
-//3.ShowFullScreenInterstitialAd
-void openMGAdvert(HINSTANCE hDLL) {
-	OpenMGAdvert func = (OpenMGAdvert)GetProcAddress(hDLL, "OpenAdvert");
-	int result = func(parentPtr, "{\"advertplaceKey\":\"72F76D95C0\",\"parentWidth\":1600,\"parentHeight\":900,\"appType\":1}");
-	//parentPtr: you can pass the handle of the whole form, or the handle of the container that spreads over the full screen
-	//parentWidth: width of the game window
-	//parentHeight: game window height
+//3.Couple
+void openMGAdvert(HINSTANCE hDLL) { 
+	OpenAdvert func = (OpenAdvert)GetProcAddress(hDLL, "OpenAdvert");
+	nlohmann::json json_obj = {
+		{"handle",reinterpret_cast(g_hPnlCoupletLeft)},//Left Control Handle
+		{"advertplaceKey", CoupletAdKey},//Advertising ID,Created by developers in the MG backend
+		{"appType", 1},
+		{"adType", 3},//Couplet 
+		{"handle2", reinterpret_cast(g_hPnlCoupletRight)}//Right-side control handle. If not passed, only the left-side ad will be displayed.
+	};
+	std::string jsonStr = json_obj.dump();
+	int result = func(jsonStr.c_str());
 }
 		
-//4.ShowBannerAd
+//4.Interstitial
 void openMGAdvert(HINSTANCE hDLL) { 
-	OpenMGAdvert func = (OpenMGAdvert)GetProcAddress(hDLL, "OpenAdvert");
-	int result = func(parentPtr, "{\"advertplaceKey\":\"0B2D9717A1\",\"appType\":1}");
+	OpenAdvert func = (OpenAdvert)GetProcAddress(hDLL, "OpenAdvert");
+	nlohmann::json json_obj = {
+		{"advertplaceKey", InterstitialAdKey},//Advertising ID,Created by developers in the MG backend
+		{"appType", 1},
+		{"adType", 1},
+		{"handle",reinterpret_cast(g_hPnlInterstitial)}
+	};
+	std::string jsonStr = json_obj.dump();
+	int result = func(jsonStr.c_str());
 }
 
-//5.ShowCoupletAd
-void openMGAdvert(HINSTANCE hDLL) { 
-	OpenMGAdvert func = (OpenMGAdvert)GetProcAddress(hDLL, "OpenAdvert");
-	int result = func(parentPtr, "{\"advertplaceKey\":\"3427B3ED71\",\"handle2\":234567,\"appType\":1}");
-	//handle2: right container handle converted to int type
-}
+//5.Fullscreen
+void openMGAdvert(HINSTANCE hDLL) {
+	OpenAdvert func = (OpenAdvert)GetProcAddress(hDLL, "OpenAdvert");
+	nlohmann::json json_obj = {
+		{"handle",reinterpret_cast(g_hwndMain)},//you can pass the handle of the whole form, or the handle of the container that spreads over the full screen
+		{"advertplaceKey", FullScreenInterstitialAdKey},//Advertising ID,Created by developers in the MG backend
+		{"appType", 1},
+		{"adType", 4},  
+		{"parentWidth", clientWidth},//width of the game window
+		{"parentHeight", clientHeight}//height of the game window
+	};
+	std::string jsonStr = json_obj.dump(); 
+	int result = func(jsonStr.c_str());
+} 
+
+//6.Rewarded
+void openMGAdvert(HINSTANCE hDLL) {
+	OpenAdvert func = (OpenAdvert)GetProcAddress(hDLL, "OpenAdvert");
+	nlohmann::json json_obj = {
+		{"handle",reinterpret_cast(g_hPnlReward)},
+		{"advertplaceKey", RewardedAdKey},//Advertising ID,Created by developers in the MG backend
+		{"comment", "abc123"},//Transparent parameters require URL encoding by the frontend; they are returned unchanged in the ad-close callback event.
+		{"appType", 1},
+		{"adType", 7}
+	};
+	std::string jsonStr = json_obj.dump();
+	int result = func(jsonStr.c_str());
+} 	
 ```
 
 ### Rating
