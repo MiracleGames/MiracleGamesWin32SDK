@@ -19,7 +19,7 @@ namespace CSharpApp
         public Form1()
         {
             InitializeComponent();
-             
+
             ApplicationManager.InitCompleteEvents += InitComplete;//初始化回调
             ApplicationManager.LoginCompleteEvents += LoginComplete;
             EventManager.Instance.AssetsChanged += PaymentManager_AssetsChanged; // 资产变更，客户端回调
@@ -27,7 +27,7 @@ namespace CSharpApp
             AdvertManager.ClickAdvertEvents += AdvertManager_ClickAdvertEvents;//广告点击事件
             AdvertManager.CloseAdvertEvents += AdvertManager_CloseAdvertEvents;//广告关闭事件
             ApplicationManager.PushUriEvents += ApplicationManager_PushUriEvents;//推送回调事件 
-            ApplicationManager.OpenMgLog(false);//关闭SDK日志，默认是开启状态
+            //ApplicationManager.OpenMgLog(false);//关闭SDK日志，默认是开启状态
         }
 
         private const string YourAppKey = "8647026706";
@@ -35,12 +35,12 @@ namespace CSharpApp
         private const string MgCallbackId = "14df40e9-f566-11ed-8b41-263ab2cdee42"; //支付回调Id
         private const string SplashAdKey = "E4F8E422D3";                            //开屏:1920 x 1080
         private const string ExitAdKey = "6A1FD1D202";                              //退屏:1920 x 1080
-        private const string BannerAdKey = "0B2D9717A1";                            //横幅:728 x 90
         private const string InterstitialAdKey = "C6E76462AF";                      //插屏:640 x 640
         private const string FullScreenInterstitialAdKey = "72F76D95C0";            //全屏插播:768 x 432 
+        private const string BannerAdKey = "0B2D9717A1";                            //横幅:728 x 90 
         private const string CoupletAdKey = "3427B3ED71";                           //对联:300 x 600
         private const string RewardedAdKey = "B6B030D76C";                          //激励广告:768 x 432 
-         
+
         #region//回调
         /// <summary>
         /// 初始化回调
@@ -52,10 +52,10 @@ namespace CSharpApp
             if (args.IsCompleted)
             {
                 ShowMessage("初始化完成，Token=" + args.Token);
-                this.Invoke(new Action(() =>
-                {
-                    AdvertManager.OpenAdvert(this, SplashAdKey); //开屏广告
-                }));
+                //this.Invoke(new Action(() =>
+                //{
+                //    AdvertManager.OpenAdvert(this, SplashAdKey); //开屏广告
+                //}));
             }
         }
         /// <summary>
@@ -337,7 +337,7 @@ namespace CSharpApp
 
         //激励视频
         private void btnAd5_Click(object sender, EventArgs e)
-        { 
+        {
             try
             {
                 string comment = "abc,123,订单号,金额";
@@ -374,10 +374,119 @@ namespace CSharpApp
                 }
             }
         }
-        
+
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            AdvertManager.openExitAdvert();
+            //AdvertManager.openExitAdvert();
         }
+
+        #region //预加载示例
+        private async void btn_getAd1_Click(object sender, EventArgs e)
+        {
+            Button btnGetAd = (Button)sender;
+            string adKey = btnGetAd.Tag.ToString();
+            ShowMessage($"广告位[{adKey}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 开始预缓存...");
+
+            dynamic jsonObj = new
+            {
+                advertplaceKey = adKey,
+                left = adKey == BannerAdKey ? 100 : 0,
+                Top = adKey == BannerAdKey ? 10 : 0
+            };
+            string json = JsonConvert.SerializeObject(jsonObj); 
+            int result = await AdvertManager.PreloadAdvert(json);
+            if (result == 1)
+            {
+                //btn_showAd1.Enabled = true;
+                EnableAdBtn(adKey);
+                ShowMessage($"广告位[{adKey}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 素材准备完毕");
+            }
+            else
+            {
+                ShowMessage($"广告位[{adKey}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 预加载失败，返回结果：[{result}]");
+            }
+        } 
+        private void btn_showAd1_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            string adKey = btn.Tag.ToString().Replace("SHOW_", "");
+            dynamic jsonObj = new
+            {
+                advertplaceKey = adKey
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            int result = AdvertManager.ShowAdvert(this, json);
+            if (result == 1)//广告已经展示
+                btn.Enabled = false;
+        }
+
+        private void EnableAdBtn(string adKey)
+        { 
+            foreach (var item in groupBox1.Controls)
+            {
+                if (item is Button button)
+                {
+                    if (button.Tag.ToString() == $"SHOW_{adKey}")
+                    {
+                        button.Enabled = true;
+                        return;
+                    }
+                }
+            }
+            foreach (var item in groupBox2.Controls)
+            {
+                if (item is Button button)
+                {
+                    if (button.Tag.ToString() == $"SHOW_{adKey}")
+                    {
+                        button.Enabled = true;
+                        break;
+                    }
+                }
+            }
+        }
+         
+        private const string Google_BannerAdKey = "3F17565084";                            //横幅:728 x 90
+        private const string Google_InterstitialAdKey = "A62A9F2BDF";                      //插屏:640 x 640
+        private const string Google_FullScreenInterstitialAdKey = "AFA16C53D4";            //全屏插播:768 x 432 
+        private const string Google_CoupletAdKey = "E1C984846E";                           //对联:300 x 600
+        private const string Google_RewardedAdKey = "B62E9C3961";                          //激励广告:768 x 432 
+        private async void btn_gogGetAd1_Click(object sender, EventArgs e)
+        { 
+            Button btn = (Button)sender;
+            string adKey = btn.Tag.ToString();
+            ShowMessage($"广告位[{adKey}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 开始预缓存...");
+
+            dynamic jsonObj = new
+            {
+                advertplaceKey = adKey
+            };
+            string json = JsonConvert.SerializeObject(jsonObj); 
+            int result = await AdvertManager.PreloadAdvert( json);
+            if (result == 1)
+            {
+                //btn_gogShowAd1.Enabled = true;
+                EnableAdBtn(adKey);
+                ShowMessage($"广告位[{adKey}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 素材准备完毕");
+            }
+            else
+            {
+                ShowMessage($"广告位[{adKey}] [{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}] 预加载失败，返回结果：[{result}]");
+            }
+        } 
+        private void btn_gogShowAd1_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            string adKey = btn.Tag.ToString().Replace("SHOW_", "");
+            dynamic jsonObj = new
+            {
+                advertplaceKey = adKey
+            };
+            string json = JsonConvert.SerializeObject(jsonObj);
+            int result = AdvertManager.ShowAdvert(this, json);
+            if (result == 1)
+                btn.Enabled = false;
+        } 
+        #endregion
     }
 }
